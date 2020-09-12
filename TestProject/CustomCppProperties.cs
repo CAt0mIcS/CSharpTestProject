@@ -29,8 +29,9 @@ namespace TestProject
 				new System.IO.StreamReader(prfilePath);
 			while ((line = file.ReadLine()) != null)
 			{
-				if (line.Contains("<ItemDefinitionGroup "))
+				if (line.Contains("<ItemDefinitionGroup Condition"))
 				{
+					text += line;
 					line = file.ReadLine();
 					text += line + '\n';
 					if (line.Contains("<ClCompile>"))
