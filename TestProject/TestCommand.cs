@@ -1,19 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
-using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
-using System.Windows.Documents;
-using EnvDTE;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace TestProject
 {
@@ -87,6 +80,16 @@ namespace TestProject
 			Instance = new TestCommand(package, commandService);
 		}
 
+		private IWpfTextView GetTextView()
+		{
+			var textManager = (IVsTextManager)ServiceProvider.GetServiceAsync(typeof(SVsTextManager)).Result;
+			var componentModel = (IComponentModel)this.ServiceProvider.GetServiceAsync(typeof(SComponentModel)).Result;
+			var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+
+			textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
+			return editor.GetWpfTextView(textViewCurrent);
+		}
+
 		/// <summary>
 		/// This function is the callback used to execute the command when the menu item is clicked.
 		/// See the constructor to see how the menu item is associated with this function using
@@ -108,46 +111,33 @@ namespace TestProject
 				return;
 
 			int lineNr = ts.CurrentLine;
+			var wpfTextView = GetTextView();
 
+			if (dte.ActiveDocument != null)
+			{
+				var selection = (EnvDTE.TextSelection)dte.ActiveDocument.Selection;
+				string text = selection.Text;
 
-			var textManager = (IVsTextManager)ServiceProvider.GetServiceAsync(typeof(SVsTextManager)).Result;
-			var componentModel = (IComponentModel)this.ServiceProvider.GetServiceAsync(typeof(SComponentModel)).Result;
-			var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+				string text2 = "";
+				// Modify the text, for example:
+				bool lineSet = false;
+				foreach(char c in text)
+				{
+					if (!lineSet)
+					{
+						lineSet = true;
+						text2 += "//";
+					}
 
-			textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-			var txtedit = editor.GetWpfTextView(textViewCurrent);
+					if (c == '\n')
+						lineSet = false;
 
+					text2 += c;
+				}
 
-			//ITextEdit edit = txtedit.TextBuffer.CreateEdit();
-			//edit.Insert(lineNr, "//");
-			//edit.Apply();
-
-
-			#region Selection
-			//Get Selection
-			var objSel = (EnvDTE.TextSelection)dte.ActiveDocument.Selection;
-
-			//Create EditPoint
-			var editPoint = objSel.TopPoint.CreateEditPoint();
-			editPoint.StartOfLine();
-
-			//Get active document
-			var activeDoc = dte.ActiveDocument.Object() as TextDocument;
-
-			//Get text between EditPoint and Selection
-			var text = activeDoc.CreateEditPoint(editPoint).GetText(objSel.TopPoint);
-
-			string str1 = "hello";
-			string str2 = "hfkldsl";
-			//return text
-			string textInsert = text.Contains("//") ? $" {str1} : " : $"// {str2} : ";
-
-			ITextEdit edit = txtedit.TextBuffer.CreateEdit();
-			Microsoft.VisualStudio.Text.Span textspan = new Microsoft.VisualStudio.Text.Span(lineNr, 10);
-
-			edit.Replace(textspan, textInsert);
-			edit.Apply();
-			#endregion
+				// Replace the selection with the modified text.
+				selection.Text = text2;
+			}
 
 		}
 	}
