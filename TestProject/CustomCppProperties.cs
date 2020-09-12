@@ -243,8 +243,6 @@ namespace TestProject
 			EnvDTE.Projects projects = dte.Solution.Projects;
 
 			string vcxfilepath = "";
-			string props = "";
-			bool t = true;
 			foreach(EnvDTE.Project project in projects)
 			{
 				foreach (EnvDTE.Property property in project.Properties)
