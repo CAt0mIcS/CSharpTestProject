@@ -34,19 +34,19 @@ namespace TestProject
 	/// </remarks>
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[ProvideMenuResource("Menus.ctmenu", 1)]
-	[Guid(TestCommandPackage.PackageGuidString)]
+	[Guid(CustomCppPropertiesPackage.PackageGuidString)]
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-	public sealed class TestCommandPackage : AsyncPackage
+	public sealed class CustomCppPropertiesPackage : AsyncPackage
 	{
 		/// <summary>
-		/// TestCommandPackage GUID string.
+		/// CustomCppPropertiesPackage GUID string.
 		/// </summary>
-		public const string PackageGuidString = "8da24ced-08ff-4e0a-b62a-c63e23de1053";
+		public const string PackageGuidString = "82cc228b-cc17-46b3-9706-b3c75899da74";
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TestCommandPackage"/> class.
+		/// Initializes a new instance of the <see cref="CustomCppPropertiesPackage"/> class.
 		/// </summary>
-		public TestCommandPackage()
+		public CustomCppPropertiesPackage()
 		{
 			// Inside this method you can place any initialization code that does not require
 			// any Visual Studio service because at this point the package object is created but
@@ -68,7 +68,7 @@ namespace TestProject
 			// When initialized asynchronously, the current thread may be a background thread at this point.
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-			await TestCommand.InitializeAsync(this);
+			await CustomCppProperties.InitializeAsync(this);
 		}
 
 		#endregion

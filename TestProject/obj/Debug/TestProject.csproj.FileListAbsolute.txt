@@ -23,7 +23,6 @@ D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\extension.vsixmanifest
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\files.json
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\createTemplateManifests.cache
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\VSPackage.resources
-D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\TestCommandPackage.cto
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\VSCT.read.1.tlog
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\VSCT.write.1.tlog
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\resources.json
@@ -38,3 +37,4 @@ D:\dev\C#\Projects\TestVSExtension\TestProject\bin\Debug\Microsoft.Extensions.De
 D:\dev\C#\Projects\TestVSExtension\TestProject\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 D:\dev\C#\Projects\TestVSExtension\TestProject\bin\Debug\System.Threading.Tasks.Extensions.dll
 D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\TestProject.csproj.CopyComplete
+D:\dev\C#\Projects\TestVSExtension\TestProject\obj\Debug\CustomCppPropertiesPackage.cto

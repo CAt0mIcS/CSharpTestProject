@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidTestCommandPackage">
+  <Commands package="guidCustomCppPropertiesPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -36,7 +36,7 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
     <Groups>
-      <Group guid="guidTestCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidCustomCppPropertiesPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
     </Groups>
@@ -52,11 +52,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidTestCommandPackageCmdSet" id="TestCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidTestCommandPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidCustomCppPropertiesPackageCmdSet" id="CustomCppPropertiesId" priority="0x0100" type="Button">
+        <Parent guid="guidCustomCppPropertiesPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke TestCommand</ButtonText>
+          <ButtonText>Invoke CustomCppProperties</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,21 +68,21 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\TestCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\CustomCppProperties.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
     </Bitmaps>
   </Commands>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidTestCommandPackage" value="{8da24ced-08ff-4e0a-b62a-c63e23de1053}" />
+    <GuidSymbol name="guidCustomCppPropertiesPackage" value="{82cc228b-cc17-46b3-9706-b3c75899da74}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidTestCommandPackageCmdSet" value="{644ecc36-53c1-4f33-b690-cae7b2e459fa}">
+    <GuidSymbol name="guidCustomCppPropertiesPackageCmdSet" value="{8f968e43-f7b0-4efc-8d59-143fb14bdf9b}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="TestCommandId" value="0x0100" />
+      <IDSymbol name="CustomCppPropertiesId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{0f1e3a6f-cae7-443a-a53f-3fad076548c3}" >
+    <GuidSymbol name="guidImages" value="{8c098260-1fb2-40e8-94ac-5aceb557e7d9}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

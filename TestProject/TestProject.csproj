@@ -8,7 +8,8 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -51,14 +52,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="KeyBindingCommandHandler.cs" />
+    <Compile Include="CustomCppProperties.cs" />
+    <Compile Include="CustomCppPropertiesPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PurpleCornerBox.cs" />
-    <Compile Include="TestCommand.cs" />
-    <Compile Include="TestCommandPackage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Key.snk" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -86,7 +84,7 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.7.3069" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="TestCommandPackage.vsct">
+    <VSCTCompile Include="CustomCppPropertiesPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
@@ -97,8 +95,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\TestCommand.png" />
-    <Content Include="Resources\TestCommandPackage.ico" />
+    <Content Include="Resources\CustomCppProperties.png" />
+    <Content Include="Resources\CustomCppPropertiesPackage.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
