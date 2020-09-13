@@ -243,10 +243,21 @@ namespace TestProject
 			EnvDTE.Projects projects = dte.Solution.Projects;
 
 			string vcxfilepath = "";
-			foreach(EnvDTE.Project project in projects)
+			string projFilePath = "";
+			string props = "";
+
+			foreach (EnvDTE.Project project in projects)
 			{
 				foreach (EnvDTE.Property property in project.Properties)
 				{
+					try
+					{
+						props += property.Name + ":\t" + property.Value.ToString() + '\n';
+					}
+					catch (Exception)
+					{
+					}
+
 					if (property.Name == "Kind" && property.Value.ToString() != "VCProject")
 					{
 						throw new Exception("Wrong project type, needs to be a C++ project");
@@ -260,12 +271,25 @@ namespace TestProject
 					{
 						vcxfilepath = property.Value.ToString();
 					}
+					else if(property.Name == "ProjectDirectory")
+					{
+						projFilePath = property.Value.ToString();
+					}
 				}
 				break;
 			}
 
+			VsShellUtilities.ShowMessageBox(this.package, props, "", 0, 0, 0);
+
 			if(!vcxfilepath.Equals(""))
 				VCXProjFileHandler.ModifyVCXProj(vcxfilepath);
+			
+			Directory.CreateDirectory(projFilePath + "\\src");
+			File.Create(projFilePath + "\\src\\pch.cpp");
+			File.Create(projFilePath + "\\src\\pch.h");
+			File.Create(projFilePath + "\\src\\main.cpp");
+
+			//TODO: Add pch.cpp properties to make it create precompiled headers
 		}
 	}
 }
