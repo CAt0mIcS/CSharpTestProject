@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CustomCppProperties.cs" />
     <Compile Include="CustomCppPropertiesPackage.cs" />
+    <Compile Include="CustomCppWin32APIProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

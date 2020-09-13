@@ -59,7 +59,7 @@ namespace TestProject
   + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
   + "\n  </ClCompile>"
   + "\n  <Link>"
-  + "\n    <SubSystem>Console</SubSystem>"
+  + "\n    <SubSystem>Windows</SubSystem>"
   + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
   + "\n  </Link>"
   + "\n  <PostBuildEvent>"
@@ -79,7 +79,7 @@ namespace TestProject
   + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
   + "\n  </ClCompile>"
   + "\n  <Link>"
-  + "\n    <SubSystem>Console</SubSystem>"
+  + "\n    <SubSystem>Windows</SubSystem>"
   + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
   + "\n  </Link>"
   + "\n  <PostBuildEvent>"
@@ -101,7 +101,7 @@ namespace TestProject
   + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
   + "\n  </ClCompile>"
   + "\n  <Link>"
-  + "\n    <SubSystem>Console</SubSystem>"
+  + "\n    <SubSystem>Windows</SubSystem>"
   + "\n    <EnableCOMDATFolding>true</EnableCOMDATFolding>"
   + "\n    <OptimizeReferences>true</OptimizeReferences>"
   + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
@@ -125,7 +125,7 @@ namespace TestProject
   + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
   + "\n  </ClCompile>"
   + "\n  <Link>"
-  + "\n    <SubSystem>Console</SubSystem>"
+  + "\n    <SubSystem>Windows</SubSystem>"
   + "\n    <EnableCOMDATFolding>true</EnableCOMDATFolding>"
   + "\n    <OptimizeReferences>true</OptimizeReferences>"
   + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
@@ -153,6 +153,139 @@ namespace TestProject
 			writer.WriteLine(text);
 			writer.Close();
 
+		}
+
+		public static void ModifyVCXProjWin32(string prfilePath)
+		{
+			string line = "";
+			int propCount = 0;
+			string text = "";
+			System.IO.StreamReader file =
+				new System.IO.StreamReader(prfilePath);
+			while ((line = file.ReadLine()) != null)
+			{
+				if (line.Contains("<PropertyGroup Condition="))
+				{
+					++propCount;
+					if (propCount > 4)
+					{
+						text += line + '\n';
+						line = file.ReadLine();
+
+						text += "    <OutDir>$(SolutionDir)\\bin\\$(Configuration)-$(Platform)\\</OutDir>\n    <IntDir>$(SolutionDir)\\bin-int\\$(Configuration)-$(Platform)\\$(ProjectName)\\</IntDir>\n";
+					}
+				}
+
+				text += line + '\n';
+			}
+			file.Close();
+
+			#region insertString
+			text = text.Insert(text.IndexOf("</Project>") - 1, "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|Win32'\">\n"
+  + "  <ClCompile>"
+  + "\n    <WarningLevel>Level3</WarningLevel>"
+  + "\n    <SDLCheck>true</SDLCheck>"
+  + "\n    <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);</PreprocessorDefinitions>"
+  + "\n    <ConformanceMode>true</ConformanceMode>"
+  + "\n    <LanguageStandard>stdcpp17</LanguageStandard>"
+  + "\n    <PrecompiledHeader>Use</PrecompiledHeader>"
+  + "\n    <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>"
+  + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
+  + "\n  </ClCompile>"
+  + "\n  <Link>"
+  + "\n    <SubSystem>Windows</SubSystem>"
+  + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
+  + "\n  </Link>"
+  + "\n  <PostBuildEvent>"
+  + "\n    <Command>"
+  + "\n    </Command>"
+  + "\n  </PostBuildEvent>"
+  + "\n</ItemDefinitionGroup>"
+  + "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|x64'\">"
+  + "\n  <ClCompile>"
+  + "\n    <WarningLevel>Level3</WarningLevel>"
+  + "\n    <SDLCheck>true</SDLCheck>"
+  + "\n    <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);</PreprocessorDefinitions>"
+  + "\n    <ConformanceMode>true</ConformanceMode>"
+  + "\n    <PrecompiledHeader>Use</PrecompiledHeader>"
+  + "\n    <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>"
+  + "\n    <LanguageStandard>stdcpp17</LanguageStandard>"
+  + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
+  + "\n  </ClCompile>"
+  + "\n  <Link>"
+  + "\n    <SubSystem>Windows</SubSystem>"
+  + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
+  + "\n  </Link>"
+  + "\n  <PostBuildEvent>"
+  + "\n    <Command>"
+  + "\n    </Command>"
+  + "\n  </PostBuildEvent>"
+  + "\n</ItemDefinitionGroup>"
+  + "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Release|Win32'\">"
+  + "\n  <ClCompile>"
+  + "\n    <WarningLevel>Level3</WarningLevel>"
+  + "\n    <FunctionLevelLinking>true</FunctionLevelLinking>"
+  + "\n    <IntrinsicFunctions>true</IntrinsicFunctions>"
+  + "\n    <SDLCheck>true</SDLCheck>"
+  + "\n    <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);</PreprocessorDefinitions>"
+  + "\n    <ConformanceMode>true</ConformanceMode>"
+  + "\n    <LanguageStandard>stdcpp17</LanguageStandard>"
+  + "\n    <PrecompiledHeader>Use</PrecompiledHeader>"
+  + "\n    <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>"
+  + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
+  + "\n  </ClCompile>"
+  + "\n  <Link>"
+  + "\n    <SubSystem>Windows</SubSystem>"
+  + "\n    <EnableCOMDATFolding>true</EnableCOMDATFolding>"
+  + "\n    <OptimizeReferences>true</OptimizeReferences>"
+  + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
+  + "\n  </Link>"
+  + "\n  <PostBuildEvent>"
+  + "\n    <Command>"
+  + "\n    </Command>"
+  + "\n  </PostBuildEvent>"
+  + "\n</ItemDefinitionGroup>"
+  + "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Release|x64'\">"
+  + "\n  <ClCompile>"
+  + "\n    <WarningLevel>Level3</WarningLevel>"
+  + "\n    <FunctionLevelLinking>true</FunctionLevelLinking>"
+  + "\n    <IntrinsicFunctions>true</IntrinsicFunctions>"
+  + "\n    <SDLCheck>true</SDLCheck>"
+  + "\n    <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);</PreprocessorDefinitions>"
+  + "\n    <ConformanceMode>true</ConformanceMode>"
+  + "\n    <PrecompiledHeader>Use</PrecompiledHeader>"
+  + "\n    <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>"
+  + "\n    <LanguageStandard>stdcpp17</LanguageStandard>"
+  + "\n    <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>"
+  + "\n  </ClCompile>"
+  + "\n  <Link>"
+  + "\n    <SubSystem>Windows</SubSystem>"
+  + "\n    <EnableCOMDATFolding>true</EnableCOMDATFolding>"
+  + "\n    <OptimizeReferences>true</OptimizeReferences>"
+  + "\n    <GenerateDebugInformation>true</GenerateDebugInformation>"
+  + "\n  </Link>"
+  + "\n  <PostBuildEvent>"
+  + "\n    <Command>"
+  + "\n    </Command>"
+  + "\n  </PostBuildEvent>"
+  + "\n</ItemDefinitionGroup>"
+  + "\n  <ItemGroup>"
+  + "\n  <ClCompile Include=\"src\\main.cpp\" />"
+  + "\n  <ClCompile Include=\"src\\pch.cpp\">"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Debug|Win32'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Release|Win32'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Debug|x64'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Release|x64'\">Create</PrecompiledHeader>"
+  + "\n  </ClCompile>"
+  + "\n</ItemGroup>"
+  + "\n<ItemGroup>"
+  + "\n  <ClInclude Include=\"src\\pch.h\" />"
+  + "\n</ItemGroup>\n");
+			#endregion
+
+			System.IO.StreamWriter writer = new System.IO.StreamWriter(prfilePath);
+			writer.WriteLine(text);
+			writer.Close();
 		}
 	}
 
@@ -284,9 +417,6 @@ namespace TestProject
 				VCXProjFileHandler.ModifyVCXProj(vcxfilepath);
 			
 			Directory.CreateDirectory(projFilePath + "\\src");
-			//File.Create(projFilePath + "\\src\\pch.cpp");
-			//File.Create(projFilePath + "\\src\\pch.h");
-			//File.Create(projFilePath + "\\src\\main.cpp");
 
 			using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.cpp", FileMode.Create))
 			{
