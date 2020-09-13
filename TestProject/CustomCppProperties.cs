@@ -2,6 +2,7 @@
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -29,18 +30,7 @@ namespace TestProject
 				new System.IO.StreamReader(prfilePath);
 			while ((line = file.ReadLine()) != null)
 			{
-				if (line.Contains("<ItemDefinitionGroup Condition"))
-				{
-					text += line;
-					line = file.ReadLine();
-					text += line + '\n';
-					if (line.Contains("<ClCompile>"))
-					{
-						text += "      <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>\n";
-						continue;
-					}
-				}
-				else if (line.Contains("<PropertyGroup Condition="))
+				if (line.Contains("<PropertyGroup Condition="))
 				{
 					++propCount;
 					if (propCount > 4)
@@ -56,10 +46,8 @@ namespace TestProject
 			}
 			file.Close();
 
-			if (!text.Contains("<ItemDefinitionGroup "))
-			{
-				#region insertString
-				text = text.Insert(text.IndexOf("</Project>") - 1, "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|Win32'\">\n"
+			#region insertString
+			text = text.Insert(text.IndexOf("</Project>") - 1, "\n<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|Win32'\">\n"
   + "  <ClCompile>"
   + "\n    <WarningLevel>Level3</WarningLevel>"
   + "\n    <SDLCheck>true</SDLCheck>"
@@ -146,9 +134,20 @@ namespace TestProject
   + "\n    <Command>"
   + "\n    </Command>"
   + "\n  </PostBuildEvent>"
-  + "\n</ItemDefinitionGroup>\n");
+  + "\n</ItemDefinitionGroup>"
+  + "\n  <ItemGroup>"
+  + "\n  <ClCompile Include=\"src\\main.cpp\" />"
+  + "\n  <ClCompile Include=\"src\\pch.cpp\">"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Debug|Win32'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Release|Win32'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Debug|x64'\">Create</PrecompiledHeader>"
+  + "\n    <PrecompiledHeader Condition=\"'$(Configuration)|$(Platform)'=='Release|x64'\">Create</PrecompiledHeader>"
+  + "\n  </ClCompile>"
+  + "\n</ItemGroup>"
+  + "\n<ItemGroup>"
+  + "\n  <ClInclude Include=\"src\\pch.h\" />"
+  + "\n</ItemGroup>\n");
 				#endregion
-			}
 
 			System.IO.StreamWriter writer = new System.IO.StreamWriter(prfilePath);
 			writer.WriteLine(text);
@@ -279,17 +278,34 @@ namespace TestProject
 				break;
 			}
 
-			VsShellUtilities.ShowMessageBox(this.package, props, "", 0, 0, 0);
+			//VsShellUtilities.ShowMessageBox(this.package, props, "", 0, 0, 0);
 
 			if(!vcxfilepath.Equals(""))
 				VCXProjFileHandler.ModifyVCXProj(vcxfilepath);
 			
 			Directory.CreateDirectory(projFilePath + "\\src");
-			File.Create(projFilePath + "\\src\\pch.cpp");
-			File.Create(projFilePath + "\\src\\pch.h");
-			File.Create(projFilePath + "\\src\\main.cpp");
+			//File.Create(projFilePath + "\\src\\pch.cpp");
+			//File.Create(projFilePath + "\\src\\pch.h");
+			//File.Create(projFilePath + "\\src\\main.cpp");
 
-			//TODO: Add pch.cpp properties to make it create precompiled headers
+			using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.cpp", FileMode.Create))
+			{
+				byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n");
+				writer.Write(arr, 0, 19);
+			}
+
+			using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.h", FileMode.Create))
+			{
+				byte[] arr = Encoding.ASCII.GetBytes("#pragma once\n\n\n");
+				writer.Write(arr, 0, 15);
+			}
+
+			using (FileStream writer = new FileStream(projFilePath + "\\src\\main.cpp", FileMode.Create))
+			{
+				byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n\nint main(int argc, char** argv)\n{\n\t\n}\n\n");
+				writer.Write(arr, 0, 59);
+			}
+
 		}
 	}
 }

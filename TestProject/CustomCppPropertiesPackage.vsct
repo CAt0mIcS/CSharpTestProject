@@ -56,7 +56,7 @@
         <Parent guid="guidCustomCppPropertiesPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Set Default Project Properties</ButtonText>
+          <ButtonText>Set Console Project Properties</ButtonText>
         </Strings>
       </Button>
     </Buttons>
