@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -343,7 +344,7 @@ namespace TestProject
 		{
 			get
 			{
-				return this.package;
+				return package;
 			}
 		}
 
@@ -370,17 +371,15 @@ namespace TestProject
 		/// <param name="e">Event args.</param>
 		private void Execute(object sender, EventArgs e)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
+			ThreadHelper.ThrowIfNotOnUIThread(); 
 			EnvDTE.DTE dte = (EnvDTE.DTE)this.ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE)).Result;
 			EnvDTE.Projects projects = dte.Solution.Projects;
 
-			string vcxfilepath = "";
-			string projFilePath = "";
 			string props = "";
 
-			foreach (EnvDTE.Project project in projects)
+			foreach (SelectedItem selectedItem in dte.SelectedItems)
 			{
-				foreach (EnvDTE.Property property in project.Properties)
+				foreach (EnvDTE.Property property in selectedItem.Project.Properties)
 				{
 					try
 					{
@@ -401,39 +400,34 @@ namespace TestProject
 					}
 					else if(property.Name == "ProjectFile")
 					{
-						vcxfilepath = property.Value.ToString();
+						string vcxfilepath = property.Value.ToString();
+
+						VCXProjFileHandler.ModifyVCXProj(vcxfilepath);
 					}
 					else if(property.Name == "ProjectDirectory")
 					{
-						projFilePath = property.Value.ToString();
+						string projFilePath = property.Value.ToString();
+						Directory.CreateDirectory(projFilePath + "\\src");
+
+						using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.cpp", FileMode.Create))
+						{
+							byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n");
+							writer.Write(arr, 0, 19);
+						}
+
+						using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.h", FileMode.Create))
+						{
+							byte[] arr = Encoding.ASCII.GetBytes("#ifndef PCH_H\n#define PCH_H\n\n\n#endif");
+							writer.Write(arr, 0, 15);
+						}
+
+						using (FileStream writer = new FileStream(projFilePath + "\\src\\main.cpp", FileMode.Create))
+						{
+							byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n\nint main(int argc, char** argv)\n{\n\t\n}\n\n");
+							writer.Write(arr, 0, 59);
+						}
 					}
 				}
-				break;
-			}
-
-			//VsShellUtilities.ShowMessageBox(this.package, props, "", 0, 0, 0);
-
-			if(!vcxfilepath.Equals(""))
-				VCXProjFileHandler.ModifyVCXProj(vcxfilepath);
-			
-			Directory.CreateDirectory(projFilePath + "\\src");
-
-			using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.cpp", FileMode.Create))
-			{
-				byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n");
-				writer.Write(arr, 0, 19);
-			}
-
-			using (FileStream writer = new FileStream(projFilePath + "\\src\\pch.h", FileMode.Create))
-			{
-				byte[] arr = Encoding.ASCII.GetBytes("#pragma once\n\n\n");
-				writer.Write(arr, 0, 15);
-			}
-
-			using (FileStream writer = new FileStream(projFilePath + "\\src\\main.cpp", FileMode.Create))
-			{
-				byte[] arr = Encoding.ASCII.GetBytes("#include \"pch.h\"\n\n\n\nint main(int argc, char** argv)\n{\n\t\n}\n\n");
-				writer.Write(arr, 0, 59);
 			}
 
 		}
